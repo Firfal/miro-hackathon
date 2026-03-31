@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../hooks/useAuth'
-import { Users, ArrowRight, Loader2, LogOut } from 'lucide-react'
+import { ArrowRight, Loader2, LogOut } from 'lucide-react'
+import { JoinTeamIllustration } from './Illustrations'
 
 export default function JoinTeam({ profile, onLogout }) {
   const { joinTeam } = useAuth()
@@ -29,84 +30,68 @@ export default function JoinTeam({ profile, onLogout }) {
     }
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
-    }
-  }
-
   if (success) {
     return (
-      <div className="min-h-screen bg-apple-light flex items-center justify-center p-6">
-        <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
+      <div className="min-h-screen bg-surface flex items-center justify-center p-6">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className="text-center"
         >
-          <div className="w-24 h-24 bg-mood-great rounded-[2rem] flex items-center justify-center text-white text-5xl shadow-apple-lg mx-auto mb-8">
-            <Users size={48} strokeWidth={3} />
-          </div>
-          <h2 className="text-4xl font-extrabold text-apple-text tracking-tight mb-2">You're in!</h2>
-          <p className="text-apple-muted text-lg font-medium">Entering your team space...</p>
+          <JoinTeamIllustration className="w-48 h-auto mx-auto mb-6" />
+          <h2 className="text-3xl font-bold text-ink tracking-tight mb-2">You're in!</h2>
+          <p className="text-ink-muted text-base">Entering your team space...</p>
         </motion.div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-apple-light flex items-center justify-center px-6">
-      <motion.div 
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="w-full max-w-md apple-card p-10 text-center"
+    <div className="min-h-screen bg-surface flex items-center justify-center px-6">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-md card-flat p-8 text-center"
       >
-        <div className="w-20 h-20 bg-apple-blue/10 rounded-[1.8rem] flex items-center justify-center text-apple-blue mx-auto mb-8 shadow-inner">
-          <Users size={40} />
-        </div>
-        
-        <h1 className="text-3xl font-extrabold text-apple-text tracking-tight mb-3">Join your team</h1>
-        <p className="text-apple-muted font-medium mb-10">
-          Welcome, {profile.name.split(' ')[0]}. Enter the invite code provided by your HR manager.
+        <JoinTeamIllustration className="w-40 h-auto mx-auto mb-6" />
+
+        <h1 className="text-2xl font-bold text-ink tracking-tight mb-2">Join your team</h1>
+        <p className="text-ink-muted text-sm mb-8">
+          Welcome, {profile.name.split(' ')[0]}. Enter the invite code from your HR manager.
         </p>
 
         {error && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-mood-bad/10 text-mood-bad px-5 py-3 rounded-2xl mb-8 text-sm font-bold border border-mood-bad/10"
+            className="bg-pastel-red text-mood-bad px-4 py-3 rounded-xl mb-6 text-sm font-medium border border-mood-bad/10"
           >
             {error}
           </motion.div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="relative">
-            <input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              className="w-full bg-black/5 border-none rounded-3xl px-6 py-6 text-apple-text text-center text-4xl tracking-[0.4em] font-black placeholder:text-apple-muted/20 placeholder:text-lg placeholder:tracking-normal focus:ring-4 focus:ring-apple-blue/10 transition-all"
-              placeholder="CODE"
-              maxLength={8}
-              autoFocus
-            />
-          </div>
-          
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            className="input-field text-center text-2xl tracking-[0.3em] font-bold py-5 placeholder:text-lg placeholder:tracking-normal placeholder:font-normal"
+            placeholder="CODE"
+            maxLength={8}
+            autoFocus
+          />
+
           <motion.button
             type="submit"
             disabled={loading || code.trim().length < 4}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-apple-text text-white font-bold py-5 rounded-2xl hover:bg-black transition-all shadow-apple-lg flex items-center justify-center gap-3 text-lg disabled:opacity-40"
+            whileTap={{ scale: 0.97 }}
+            className="w-full btn-primary py-4 flex items-center justify-center gap-2 text-base disabled:opacity-40"
           >
-            {loading ? <Loader2 className="animate-spin" size={24} /> : (
+            {loading ? <Loader2 className="animate-spin" size={20} /> : (
               <>
                 Join Team
-                <ArrowRight size={20} strokeWidth={3} />
+                <ArrowRight size={18} />
               </>
             )}
           </motion.button>
@@ -114,9 +99,9 @@ export default function JoinTeam({ profile, onLogout }) {
 
         <button
           onClick={onLogout}
-          className="mt-10 flex items-center gap-2 text-apple-muted hover:text-mood-bad transition-colors font-bold text-xs uppercase tracking-widest mx-auto"
+          className="mt-8 flex items-center gap-2 text-ink-muted hover:text-mood-bad transition-colors text-xs font-medium mx-auto"
         >
-          <LogOut size={14} strokeWidth={3} />
+          <LogOut size={13} />
           Sign out
         </button>
       </motion.div>

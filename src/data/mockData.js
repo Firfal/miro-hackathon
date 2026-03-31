@@ -1,9 +1,9 @@
 export const moodConfig = {
-  great: { emoji: '😄', label: 'Great',   color: '#34C759', bg: '#E4F4E5', bgLight: '#F2FAF2' },
-  good:  { emoji: '😊', label: 'Good',    color: '#007AFF', bg: '#E3F1FD', bgLight: '#F0F8FF' },
-  okay:  { emoji: '😐', label: 'Okay',    color: '#FFCC00', bg: '#FFF9E0', bgLight: '#FFFEF5' },
-  low:   { emoji: '😔', label: 'Low',     color: '#FF9500', bg: '#FFF1E0', bgLight: '#FFF8F0' },
-  bad:   { emoji: '😢', label: 'Bad',     color: '#FF3B30', bg: '#FDECEC', bgLight: '#FFF5F5' },
+  great: { emoji: '😄', label: 'Great',   color: '#2DB67D', bg: '#E2F5EC', bgLight: '#F0FAF5' },
+  good:  { emoji: '😊', label: 'Good',    color: '#5B6CF0', bg: '#E8EAFD', bgLight: '#F3F4FE' },
+  okay:  { emoji: '😐', label: 'Okay',    color: '#F5C542', bg: '#FDF5E0', bgLight: '#FEFBF2' },
+  low:   { emoji: '😔', label: 'Low',     color: '#E88C4A', bg: '#FDF0E4', bgLight: '#FEF7F0' },
+  bad:   { emoji: '😢', label: 'Bad',     color: '#D94F4F', bg: '#FCEAEA', bgLight: '#FEF5F5' },
 }
 
 export const checkInQuestions = [
@@ -47,7 +47,7 @@ export const checkInQuestions = [
     lowLabel: 'Light',
     highLabel: 'Overwhelming',
     lowEmoji: '🪶',
-    highEmoji: '🧠',
+    highEmoji: '🏋️',
   },
   {
     id: 'sleep',
@@ -63,7 +63,6 @@ export const checkInQuestions = [
   },
 ]
 
-// Generate deterministic mood history
 export function generateMoodHistory(seed) {
   const history = []
   const today = new Date()

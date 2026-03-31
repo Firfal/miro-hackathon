@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Filter, AlertCircle, Search, ChevronRight, Zap, Flame, Brain, Users } from 'lucide-react'
+import { AlertCircle, Search, ChevronRight, Zap, Flame, Brain, Users } from 'lucide-react'
 import { moodConfig } from '../data/mockData'
 import { Avatar } from './Avatar'
+import { MoodFace } from './Illustrations'
 
 export default function HRTeam({ members, onSelectMember }) {
   const [filter, setFilter] = useState('all')
@@ -14,10 +15,10 @@ export default function HRTeam({ members, onSelectMember }) {
       : filter === 'alert'
       ? (m.stress || 0) >= 7 || (m.energy || 0) <= 3
       : m.mood === filter
-    
-    const matchesSearch = m.name.toLowerCase().includes(search.toLowerCase()) || 
+
+    const matchesSearch = m.name.toLowerCase().includes(search.toLowerCase()) ||
                           m.email.toLowerCase().includes(search.toLowerCase())
-    
+
     return matchesFilter && matchesSearch
   })
 
@@ -27,7 +28,6 @@ export default function HRTeam({ members, onSelectMember }) {
     ...Object.entries(moodConfig).map(([key, cfg]) => ({
       id: key,
       label: cfg.label,
-      emoji: cfg.emoji,
       count: members.filter((m) => m.mood === key).length,
     })),
   ]
@@ -36,35 +36,33 @@ export default function HRTeam({ members, onSelectMember }) {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.05 }
+      transition: { staggerChildren: 0.04 }
     }
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+      transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }
     }
   }
 
   return (
-    <div className="min-h-screen px-6 md:px-12 py-8 md:py-16 max-w-7xl mx-auto">
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-apple-text tracking-tight mb-8">Team Directory</h1>
-        
-        {/* Search & Filters Container */}
-        <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
-          <div className="relative w-full lg:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-apple-muted" size={20} />
-            <input 
-              type="text" 
+    <div className="min-h-screen px-6 md:px-10 py-8 md:py-14 max-w-6xl mx-auto">
+      <div className="mb-8">
+        <h1 className="font-display text-4xl md:text-5xl text-ink mb-6">Team Directory</h1>
+
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="relative w-full lg:w-80">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-faint" size={18} />
+            <input
+              type="text"
               placeholder="Search members..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-black/5 border-none rounded-2xl pl-12 pr-6 py-4 text-apple-text placeholder:text-apple-muted/40 focus:ring-4 focus:ring-apple-blue/10 transition-all font-medium"
+              className="input-field pl-11"
             />
           </div>
 
@@ -73,15 +71,15 @@ export default function HRTeam({ members, onSelectMember }) {
               <button
                 key={f.id}
                 onClick={() => setFilter(f.id)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
                   filter === f.id
-                    ? 'bg-apple-text text-white shadow-apple scale-105'
-                    : 'bg-white text-apple-muted hover:bg-black/5 border border-black/5'
+                    ? 'bg-ink text-white'
+                    : 'bg-white text-ink-muted hover:bg-surface-sunken border border-border-subtle'
                 }`}
               >
-                {f.icon ? <f.icon size={16} /> : <span>{f.emoji}</span>}
+                {f.icon && <f.icon size={14} />}
                 {f.label}
-                <span className={`ml-1 text-[10px] font-black uppercase ${filter === f.id ? 'text-white/60' : 'text-apple-muted/40'}`}>
+                <span className={`text-[10px] font-semibold ${filter === f.id ? 'text-white/50' : 'text-ink-faint'}`}>
                   {f.count}
                 </span>
               </button>
@@ -90,13 +88,12 @@ export default function HRTeam({ members, onSelectMember }) {
         </div>
       </div>
 
-      {/* Team grid */}
-      <motion.div 
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         key={filter + search}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
       >
         <AnimatePresence>
           {filtered.map((m) => {
@@ -109,62 +106,62 @@ export default function HRTeam({ members, onSelectMember }) {
                 variants={itemVariants}
                 key={m.id}
                 onClick={() => onSelectMember(m)}
-                className={`apple-card p-6 text-left group relative flex flex-col ${
+                className={`card-flat p-5 text-left group relative flex flex-col ${
                   isAlert ? 'border-mood-bad/20' : ''
                 }`}
               >
                 {isAlert && (
-                  <div className="absolute top-4 right-4 text-mood-bad animate-pulse">
-                    <AlertCircle size={20} strokeWidth={3} />
+                  <div className="absolute top-4 right-4 text-mood-bad">
+                    <AlertCircle size={16} />
                   </div>
                 )}
 
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-3 mb-5">
                   {m.avatarConfig ? (
-                    <Avatar config={m.avatarConfig} size={56} className="rounded-2xl shadow-sm border border-black/5 group-hover:scale-105 transition-transform" />
+                    <Avatar config={m.avatarConfig} size={44} className="rounded-xl" />
                   ) : (
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-apple-light to-apple-gray flex items-center justify-center text-sm font-bold text-apple-text border border-black/5 shadow-sm group-hover:scale-105 transition-transform">
+                    <div className="w-11 h-11 rounded-xl bg-surface-sunken flex items-center justify-center text-sm font-semibold text-ink border border-border-subtle">
                       {m.avatar}
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="font-extrabold text-apple-text truncate text-lg tracking-tight leading-tight">{m.name}</p>
-                    <p className="text-xs text-apple-muted font-semibold mt-0.5">{m.role}</p>
+                    <p className="font-semibold text-ink truncate">{m.name}</p>
+                    <p className="text-xs text-ink-muted">{m.role}</p>
                   </div>
                 </div>
 
                 <div className="flex-1">
                   {mood ? (
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                       <div
-                        className="rounded-2xl px-4 py-3 flex items-center justify-between"
+                        className="rounded-xl px-3.5 py-2.5 flex items-center justify-between"
                         style={{ backgroundColor: mood.bgLight }}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="text-2xl">{mood.emoji}</span>
-                          <span className="font-bold text-sm" style={{ color: mood.color }}>{mood.label}</span>
+                        <div className="flex items-center gap-2">
+                          <MoodFace mood={m.mood} size={28} />
+                          <span className="font-semibold text-sm" style={{ color: mood.color }}>{mood.label}</span>
                         </div>
-                        <span className="text-[10px] font-bold text-apple-muted/60 uppercase tracking-widest">
+                        <span className="text-[10px] font-medium text-ink-muted uppercase tracking-wider">
                           {m.checkedInToday ? 'Today' : 'Past'}
                         </span>
                       </div>
-                      
-                      <div className="grid grid-cols-3 gap-4 px-2">
-                        <MiniMetric label="Energy" value={m.energy} icon={Zap} color="text-mood-great" bgColor="bg-mood-great/20" />
-                        <MiniMetric label="Stress" value={m.stress} icon={Flame} color="text-mood-low" bgColor="bg-mood-low/20" />
-                        <MiniMetric label="Load" value={m.mentalLoad} icon={Brain} color="text-apple-blue" bgColor="bg-apple-blue/20" />
+
+                      <div className="grid grid-cols-3 gap-3">
+                        <MiniMetric label="Energy" value={m.energy} color="text-accent-teal" />
+                        <MiniMetric label="Stress" value={m.stress} color="text-accent-coral" />
+                        <MiniMetric label="Load" value={m.mentalLoad} color="text-accent-indigo" />
                       </div>
                     </div>
                   ) : (
-                    <div className="h-32 rounded-2xl bg-black/5 flex flex-col items-center justify-center text-center p-6">
-                       <p className="text-xs font-bold text-apple-muted uppercase tracking-widest">No recent data</p>
+                    <div className="h-28 rounded-xl bg-surface-sunken flex items-center justify-center">
+                      <p className="text-xs font-medium text-ink-muted">No recent data</p>
                     </div>
                   )}
                 </div>
 
-                <div className="mt-8 pt-4 border-t border-black/5 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-xs font-bold text-apple-blue uppercase tracking-widest">View Deep Insights</span>
-                  <ChevronRight size={16} className="text-apple-blue" />
+                <div className="mt-5 pt-3 border-t border-border-subtle flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="text-xs font-medium text-primary">View details</span>
+                  <ChevronRight size={14} className="text-primary" />
                 </div>
               </motion.button>
             )
@@ -173,36 +170,33 @@ export default function HRTeam({ members, onSelectMember }) {
       </motion.div>
 
       {filtered.length === 0 && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center py-32 text-apple-muted"
+          className="text-center py-24 text-ink-muted"
         >
-          <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mx-auto mb-6 text-apple-muted/30">
-            <Search size={40} />
-          </div>
-          <h3 className="text-xl font-bold text-apple-text mb-2">No matching members</h3>
-          <p className="font-medium">Try adjusting your filters or search terms.</p>
+          <Search size={32} className="mx-auto mb-4 text-ink-faint" />
+          <h3 className="text-lg font-semibold text-ink mb-1">No matching members</h3>
+          <p className="text-sm">Try adjusting your filters or search.</p>
         </motion.div>
       )}
     </div>
   )
 }
 
-function MiniMetric({ label, value, icon: Icon, color, bgColor }) {
-  const percentage = (value || 0) * 10
-  
+function MiniMetric({ label, value, color }) {
+  const pct = (value || 0) * 10
   return (
-    <div className="flex flex-col items-center">
-      <div className="w-full h-1 bg-black/5 rounded-full overflow-hidden mb-3">
-         <motion.div 
-           initial={{ width: 0 }}
-           animate={{ width: `${percentage}%` }}
-           className={`h-full rounded-full ${color.replace('text-', 'bg-')}`}
-         />
+    <div className="text-center">
+      <div className="w-full h-1 bg-surface-sunken rounded-full overflow-hidden mb-2">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          className={`h-full rounded-full ${color.replace('text-', 'bg-')}`}
+        />
       </div>
-      <p className={`font-black text-lg ${color} leading-none`}>{value || '—'}</p>
-      <p className="text-[9px] font-bold text-apple-muted uppercase tracking-widest mt-1.5">{label}</p>
+      <p className={`font-bold text-base ${color}`}>{value || '—'}</p>
+      <p className="text-[9px] font-medium text-ink-muted uppercase tracking-wider mt-0.5">{label}</p>
     </div>
   )
 }

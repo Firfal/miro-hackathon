@@ -22,14 +22,14 @@ const HAIR_COLORS = {
 }
 
 const BG_COLORS = {
-  blue:    '#E3F1FD',
-  green:   '#E4F4E5',
+  blue:    '#E8EAFD',
+  green:   '#E2F5EC',
   lavender:'#F1E9FA',
-  peach:   '#FFF1E0',
+  peach:   '#FDF0E4',
   pink:    '#FDE7EA',
-  yellow:  '#FFF9E0',
+  yellow:  '#FDF5E0',
   mint:    '#E6F8F2',
-  gray:    '#F0F0F5',
+  gray:    '#F2EFEA',
 }
 
 // Hair style SVG paths

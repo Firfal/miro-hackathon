@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, User, Calendar as CalendarIcon, Info } from 'lucide-react'
+import { ChevronLeft, ChevronRight, User } from 'lucide-react'
 import { moodConfig } from '../data/mockData'
 import { Avatar } from './Avatar'
+import { MoodFace } from './Illustrations'
 
 export default function HRCalendar({ members }) {
   const [selectedMember, setSelectedMember] = useState(members[0] || null)
@@ -13,7 +14,6 @@ export default function HRCalendar({ members }) {
   const year = viewDate.getFullYear()
   const month = viewDate.getMonth()
 
-  // Map checkins by date
   const checkinMap = {}
   if (selectedMember) {
     (selectedMember.checkins || []).forEach((c) => { checkinMap[c.date] = c })
@@ -32,60 +32,63 @@ export default function HRCalendar({ members }) {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.06 }
     }
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    hidden: { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+      transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }
     }
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="min-h-screen px-6 md:px-12 py-8 md:py-16 max-w-7xl mx-auto"
+      className="min-h-screen px-6 md:px-10 py-8 md:py-14 max-w-6xl mx-auto"
     >
-      <motion.div variants={itemVariants} className="mb-12">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-apple-text tracking-tight mb-4">Pulse Calendar</h1>
-        <p className="text-apple-muted text-xl font-medium">Track individual wellness journeys over time.</p>
+      <motion.div variants={itemVariants} className="mb-10">
+        <h1 className="font-display text-4xl md:text-5xl text-ink mb-1">Pulse Calendar</h1>
+        <p className="text-ink-muted text-base">Track individual wellness journeys over time.</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Member selector */}
         <motion.div variants={itemVariants} className="lg:col-span-1">
-          <div className="apple-card p-4 sticky top-8 max-h-[calc(100vh-200px)] flex flex-col">
-            <p className="text-[10px] font-black text-apple-muted uppercase tracking-[0.2em] px-4 py-4 border-b border-black/5 mb-2">Team Members</p>
-            <div className="overflow-y-auto no-scrollbar space-y-1 pr-1">
+          <div className="card-flat p-3 sticky top-8 max-h-[calc(100vh-180px)] flex flex-col">
+            <p className="text-[11px] font-medium text-ink-muted uppercase tracking-wider px-3 py-3 border-b border-border-subtle mb-2">
+              Team Members
+            </p>
+            <div className="overflow-y-auto no-scrollbar space-y-0.5 pr-1">
               {members.map((m) => {
-                const mood = m.mood ? moodConfig[m.mood] : null
                 const isActive = selectedMember?.id === m.id
                 return (
                   <button
                     key={m.id}
                     onClick={() => setSelectedMember(m)}
-                    className={`w-full flex items-center gap-3 px-4 py-4 rounded-[1.5rem] text-left transition-all group ${
-                      isActive ? 'bg-apple-blue text-white shadow-apple' : 'hover:bg-black/5'
+                    className={`w-full flex items-center gap-2.5 px-3 py-3 rounded-xl text-left transition-colors ${
+                      isActive ? 'bg-primary text-white' : 'hover:bg-surface-sunken'
                     }`}
                   >
                     {m.avatarConfig ? (
-                      <Avatar config={m.avatarConfig} size={40} className={`rounded-xl shadow-sm border ${isActive ? 'border-white/10' : 'border-black/5'}`} />
+                      <Avatar config={m.avatarConfig} size={32} className={`rounded-lg ${isActive ? 'border border-white/20' : 'border border-border-subtle'}`} />
                     ) : (
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-sm border border-black/5 ${isActive ? 'bg-white/20 border-white/10' : 'bg-white'}`}>
-                        {mood ? mood.emoji : <User size={18} className="text-apple-muted" />}
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-semibold ${
+                        isActive ? 'bg-white/20 text-white' : 'bg-surface-sunken text-ink border border-border-subtle'
+                      }`}>
+                        {m.avatar}
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className={`font-bold text-sm truncate ${isActive ? 'text-white' : 'text-apple-text'}`}>{m.name}</p>
-                      <p className={`text-[10px] font-medium truncate ${isActive ? 'text-white/60' : 'text-apple-muted'}`}>{m.role}</p>
+                      <p className={`font-medium text-sm truncate ${isActive ? 'text-white' : 'text-ink'}`}>{m.name}</p>
+                      <p className={`text-[10px] truncate ${isActive ? 'text-white/50' : 'text-ink-muted'}`}>{m.role}</p>
                     </div>
                   </button>
                 )
@@ -94,54 +97,51 @@ export default function HRCalendar({ members }) {
           </div>
         </motion.div>
 
-        {/* Calendar Content */}
+        {/* Calendar */}
         <motion.div variants={itemVariants} className="lg:col-span-3">
           <AnimatePresence mode="wait">
             {selectedMember ? (
-              <motion.div 
+              <motion.div
                 key={selectedMember.id}
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 12 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="apple-card p-8 md:p-12"
+                exit={{ opacity: 0, x: -12 }}
+                className="card-flat p-6 md:p-10"
               >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                   <div>
-                    <h2 className="text-3xl font-extrabold text-apple-text tracking-tight">{monthName}</h2>
-                    <div className="flex items-center gap-2 mt-2">
-                       <div className="w-2 h-2 rounded-full bg-apple-blue" />
-                       <p className="text-sm font-bold text-apple-muted uppercase tracking-widest">{selectedMember.name}'s History</p>
-                    </div>
+                    <h2 className="text-2xl font-semibold text-ink">{monthName}</h2>
+                    <p className="text-sm font-medium text-ink-muted mt-1">{selectedMember.name}'s history</p>
                   </div>
-                  
-                  <div className="flex gap-2 bg-black/5 p-1.5 rounded-2xl">
+
+                  <div className="flex gap-1.5 bg-surface-sunken p-1 rounded-xl">
                     <button
                       onClick={() => setMonthOffset(monthOffset - 1)}
-                      className="w-12 h-12 rounded-xl bg-white hover:bg-apple-light flex items-center justify-center text-apple-text shadow-sm transition-all active:scale-95"
+                      className="w-10 h-10 rounded-lg bg-white hover:bg-border flex items-center justify-center text-ink shadow-soft transition-colors"
                     >
-                      <ChevronLeft size={24} />
+                      <ChevronLeft size={20} />
                     </button>
                     <button
                       onClick={() => monthOffset < 0 && setMonthOffset(monthOffset + 1)}
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all active:scale-95 ${
-                        monthOffset >= 0 ? 'text-apple-muted/30 bg-transparent cursor-not-allowed' : 'bg-white hover:bg-apple-light text-apple-text shadow-sm'
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                        monthOffset >= 0 ? 'text-ink-faint cursor-not-allowed' : 'bg-white hover:bg-border text-ink shadow-soft'
                       }`}
                       disabled={monthOffset >= 0}
                     >
-                      <ChevronRight size={24} />
+                      <ChevronRight size={20} />
                     </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-7 gap-4 mb-6">
+                <div className="grid grid-cols-7 gap-3 mb-4">
                   {dayNames.map((d) => (
-                    <div key={d} className="text-center text-[10px] font-black text-apple-muted uppercase tracking-[0.2em]">
+                    <div key={d} className="text-center text-[10px] font-medium text-ink-muted uppercase tracking-wider">
                       {d}
                     </div>
                   ))}
                 </div>
 
-                <div className="grid grid-cols-7 gap-4">
+                <div className="grid grid-cols-7 gap-3">
                   {cells.map((cell, idx) => {
                     if (!cell) return <div key={`e-${idx}`} />
                     const c = cell.checkin
@@ -149,43 +149,34 @@ export default function HRCalendar({ members }) {
                     const isToday = cell.day === today.getDate() && month === today.getMonth() && year === today.getFullYear()
 
                     return (
-                      <motion.div
+                      <div
                         key={cell.date}
-                        whileHover={c ? { scale: 1.05, y: -2 } : {}}
-                        className={`aspect-square rounded-[1.5rem] flex flex-col items-center justify-center relative transition-all border border-black/5 shadow-sm ${
-                          isToday ? 'ring-2 ring-apple-blue ring-offset-4' : ''
-                        }`}
-                        style={{ backgroundColor: mood ? mood.bg : '#FBFBFD' }}
+                        className={`aspect-square rounded-xl flex flex-col items-center justify-center relative border transition-colors ${
+                          isToday ? 'ring-2 ring-primary ring-offset-2' : ''
+                        } ${mood ? 'border-transparent' : 'border-border-subtle'}`}
+                        style={{ backgroundColor: mood ? mood.bg : '#FAF8F5' }}
                       >
-                        <span className="absolute top-2 left-3 text-[10px] font-bold text-apple-muted/40">{cell.day}</span>
-                        {mood && <span className="text-3xl drop-shadow-sm">{mood.emoji}</span>}
-                        {c && (
-                           <div className="absolute bottom-2 flex gap-0.5">
-                              <div className="w-1 h-1 rounded-full bg-apple-blue/20" />
-                              <div className="w-1 h-1 rounded-full bg-apple-blue/20" />
-                           </div>
-                        )}
-                      </motion.div>
+                        <span className="absolute top-1.5 left-2 text-[9px] font-medium text-ink-muted/40">{cell.day}</span>
+                        {mood && <MoodFace mood={c.mood} size={26} />}
+                      </div>
                     )
                   })}
                 </div>
 
-                <div className="mt-12 flex flex-wrap gap-6 justify-center border-t border-black/5 pt-10">
+                <div className="mt-8 flex flex-wrap gap-4 justify-center border-t border-border-subtle pt-6">
                   {Object.entries(moodConfig).map(([key, cfg]) => (
-                    <div key={key} className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cfg.color }} />
-                      <span className="text-xs font-bold text-apple-muted uppercase tracking-widest">{cfg.label}</span>
+                    <div key={key} className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cfg.color }} />
+                      <span className="text-[11px] font-medium text-ink-muted">{cfg.label}</span>
                     </div>
                   ))}
                 </div>
               </motion.div>
             ) : (
-              <div className="apple-card p-20 text-center text-apple-muted">
-                <div className="w-20 h-20 bg-black/5 rounded-full flex items-center justify-center mx-auto mb-6 text-apple-muted/30">
-                  <User size={40} />
-                </div>
-                <h3 className="text-xl font-bold text-apple-text mb-2">Select a member</h3>
-                <p className="font-medium">Choose someone from the directory to view their wellness history.</p>
+              <div className="card-flat p-16 text-center text-ink-muted">
+                <User size={32} className="mx-auto mb-3 text-ink-faint" />
+                <h3 className="text-lg font-semibold text-ink mb-1">Select a member</h3>
+                <p className="text-sm">Choose someone to view their wellness history.</p>
               </div>
             )}
           </AnimatePresence>

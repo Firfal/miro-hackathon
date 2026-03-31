@@ -1,15 +1,14 @@
 import { motion } from 'framer-motion'
-import { AlertTriangle, Zap, Flame, Brain, Info, CheckCircle2, ChevronRight, User } from 'lucide-react'
-import { moodConfig } from '../data/mockData'
+import { AlertTriangle, Zap, Flame, Brain, ChevronRight } from 'lucide-react'
+import { EmptyStateIllustration } from './Illustrations'
+import { Avatar } from './Avatar'
 
 export default function HRAlerts({ members }) {
-  // Generate alerts based on member data
   const alerts = []
 
   members.forEach((m) => {
     if (!m.latestCheckin) return
 
-    // High stress alert
     if ((m.stress || 0) >= 7) {
       alerts.push({
         id: `${m.id}-stress`,
@@ -19,11 +18,10 @@ export default function HRAlerts({ members }) {
         description: `${m.name} is experiencing significant pressure.`,
         icon: Flame,
         color: 'text-mood-bad',
-        bgColor: 'bg-mood-bad/10',
+        bgColor: 'bg-pastel-red',
       })
     }
 
-    // Low energy alert
     if ((m.energy || 0) <= 3) {
       alerts.push({
         id: `${m.id}-energy`,
@@ -33,11 +31,10 @@ export default function HRAlerts({ members }) {
         description: `${m.name} reports feeling very drained.`,
         icon: Zap,
         color: 'text-mood-low',
-        bgColor: 'bg-mood-low/10',
+        bgColor: 'bg-pastel-orange',
       })
     }
 
-    // High mental load
     if ((m.mentalLoad || 0) >= 8) {
       alerts.push({
         id: `${m.id}-load`,
@@ -46,12 +43,11 @@ export default function HRAlerts({ members }) {
         title: 'Mental overload',
         description: `${m.name} has a heavy mental weight today.`,
         icon: Brain,
-        color: 'text-apple-blue',
-        bgColor: 'bg-apple-blue/10',
+        color: 'text-accent-indigo',
+        bgColor: 'bg-secondary-light',
       })
     }
 
-    // Bad mood
     if (m.mood === 'bad') {
       alerts.push({
         id: `${m.id}-mood`,
@@ -61,7 +57,7 @@ export default function HRAlerts({ members }) {
         description: `${m.name} shared a difficult reflection.`,
         icon: AlertTriangle,
         color: 'text-mood-bad',
-        bgColor: 'bg-mood-bad/10',
+        bgColor: 'bg-pastel-red',
       })
     }
   })
@@ -69,92 +65,106 @@ export default function HRAlerts({ members }) {
   const priority = { critical: 0, warning: 1, info: 2 }
   alerts.sort((a, b) => priority[a.type] - priority[b.type])
 
+  const critical = alerts.filter(a => a.type === 'critical').length
+  const warning = alerts.filter(a => a.type === 'warning').length
+
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.06 }
     }
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }
     }
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="min-h-screen px-6 md:px-12 py-8 md:py-16 max-w-5xl mx-auto"
+      className="min-h-screen px-6 md:px-10 py-8 md:py-14 max-w-4xl mx-auto"
     >
-      <motion.div variants={itemVariants} className="mb-12">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-apple-text tracking-tight mb-4">Signal Center</h1>
-        <p className="text-apple-muted text-xl font-medium">
+      <motion.div variants={itemVariants} className="mb-8">
+        <h1 className="font-display text-4xl md:text-5xl text-ink mb-2">Signal Center</h1>
+        <p className="text-ink-muted text-base">
           {alerts.length === 0
             ? "Your team is thriving. No signals detected today."
-            : `We've detected ${alerts.length} signals that might need your attention.`
+            : `${alerts.length} signals need your attention.`
           }
         </p>
       </motion.div>
 
+      {/* Summary pills */}
+      {alerts.length > 0 && (
+        <motion.div variants={itemVariants} className="flex gap-2 mb-8">
+          {critical > 0 && (
+            <span className="px-3 py-1.5 rounded-lg bg-pastel-red text-mood-bad text-xs font-semibold">
+              {critical} critical
+            </span>
+          )}
+          {warning > 0 && (
+            <span className="px-3 py-1.5 rounded-lg bg-pastel-orange text-mood-low text-xs font-semibold">
+              {warning} warning
+            </span>
+          )}
+        </motion.div>
+      )}
+
       {alerts.length === 0 ? (
-        <motion.div 
-          variants={itemVariants}
-          className="apple-card p-20 text-center"
-        >
-          <div className="w-24 h-24 bg-mood-great/10 rounded-[2.5rem] flex items-center justify-center text-mood-great mx-auto mb-8 shadow-inner">
-            <CheckCircle2 size={48} strokeWidth={2.5} />
-          </div>
-          <h2 className="text-3xl font-extrabold text-apple-text mb-3 tracking-tight">System Healthy</h2>
-          <p className="text-apple-muted text-lg font-medium max-w-md mx-auto">
+        <motion.div variants={itemVariants} className="card-flat p-16 text-center">
+          <EmptyStateIllustration className="w-40 h-auto mx-auto mb-6" />
+          <h2 className="text-2xl font-bold text-ink mb-2">All clear</h2>
+          <p className="text-ink-muted text-sm max-w-sm mx-auto">
             Everything looks balanced. Your team's wellness signals are within optimal range.
           </p>
         </motion.div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {alerts.map((alert) => (
             <motion.div
               key={alert.id}
               variants={itemVariants}
-              whileHover={{ scale: 1.01, x: 10 }}
-              className="apple-card p-6 flex items-center gap-6 group cursor-pointer"
+              className="card-flat p-5 flex items-center gap-5 group hover:bg-surface-sunken transition-colors cursor-pointer"
             >
-              <div className={`w-16 h-16 rounded-[1.5rem] ${alert.bgColor} flex items-center justify-center ${alert.color} shadow-inner flex-shrink-0`}>
-                <alert.icon size={32} strokeWidth={2.5} />
+              <div className={`w-11 h-11 rounded-xl ${alert.bgColor} flex items-center justify-center ${alert.color} shrink-0`}>
+                <alert.icon size={22} />
               </div>
-              
+
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-1">
-                  <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-full ${
-                    alert.type === 'critical' ? 'bg-mood-bad text-white' :
-                    alert.type === 'warning' ? 'bg-mood-low text-white' :
-                    'bg-apple-blue text-white'
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                    alert.type === 'critical' ? 'bg-mood-bad text-white' : 'bg-mood-low text-white'
                   }`}>
                     {alert.type}
                   </span>
-                  <span className="text-xs font-bold text-apple-muted uppercase tracking-widest">Active Signal</span>
                 </div>
-                <h3 className="text-xl font-extrabold text-apple-text tracking-tight">{alert.title}</h3>
-                <p className="text-apple-muted font-medium mt-1">{alert.description}</p>
+                <h3 className="text-base font-semibold text-ink">{alert.title}</h3>
+                <p className="text-ink-muted text-sm">{alert.description}</p>
               </div>
 
-              <div className="flex items-center gap-6">
-                <div className="hidden md:flex items-center gap-3 pr-6 border-r border-black/5">
-                   <div className="w-10 h-10 rounded-xl bg-apple-light flex items-center justify-center text-sm font-bold text-apple-text border border-black/5">
+              <div className="flex items-center gap-4">
+                <div className="hidden md:flex items-center gap-2.5 pr-4 border-r border-border-subtle">
+                  {alert.member.avatarConfig ? (
+                    <Avatar config={alert.member.avatarConfig} size={32} className="rounded-lg" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-surface-sunken flex items-center justify-center text-xs font-semibold text-ink border border-border-subtle">
                       {alert.member.avatar}
-                   </div>
-                   <div className="text-right">
-                      <p className="text-sm font-bold text-apple-text leading-tight">{alert.member.name}</p>
-                      <p className="text-[10px] font-bold text-apple-muted uppercase mt-0.5">{alert.member.role}</p>
-                   </div>
+                    </div>
+                  )}
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-ink leading-tight">{alert.member.name}</p>
+                    <p className="text-[10px] text-ink-muted">{alert.member.role}</p>
+                  </div>
                 </div>
-                <ChevronRight size={24} className="text-apple-muted/30 group-hover:text-apple-text transition-colors" />
+                <ChevronRight size={18} className="text-ink-faint group-hover:text-ink-muted transition-colors" />
               </div>
             </motion.div>
           ))}

@@ -50,7 +50,6 @@ export default function AvatarEditor({ initialConfig, onSave, onBack }) {
     }
   }
 
-  // Render color swatches for skin, hairColor, bg
   const isColorField = ['skin', 'hairColor', 'bg'].includes(activeSection)
   const colorMap = activeSection === 'skin' ? SKIN_COLORS
     : activeSection === 'hairColor' ? HAIR_COLOR_VALUES
@@ -58,11 +57,11 @@ export default function AvatarEditor({ initialConfig, onSave, onBack }) {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.04 } },
   }
   const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
+    hidden: { opacity: 0, y: 12 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } },
   }
 
   return (
@@ -70,41 +69,38 @@ export default function AvatarEditor({ initialConfig, onSave, onBack }) {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="min-h-screen px-6 md:px-12 py-8 md:py-16 max-w-3xl mx-auto"
+      className="min-h-screen px-6 md:px-10 py-8 md:py-14 max-w-3xl mx-auto"
     >
-      {/* Back */}
       <motion.button
         variants={itemVariants}
         onClick={onBack}
-        className="flex items-center gap-2 text-apple-muted hover:text-apple-text mb-10 text-sm font-bold uppercase tracking-widest transition-colors group"
+        className="flex items-center gap-1.5 text-ink-muted hover:text-ink mb-8 text-sm font-medium transition-colors group"
       >
-        <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+        <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
         Back
       </motion.button>
 
-      <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-extrabold text-apple-text tracking-tight mb-12">
+      <motion.h1 variants={itemVariants} className="font-display text-4xl text-ink mb-10">
         Create your avatar
       </motion.h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Preview */}
         <motion.div variants={itemVariants} className="flex flex-col items-center">
-          <div className="apple-card p-8 w-full flex flex-col items-center">
-            <Avatar config={config} size={200} className="rounded-[2.5rem] shadow-apple-lg mb-6" />
-            <p className="text-sm font-bold text-apple-muted">Preview</p>
+          <div className="card-flat p-8 w-full flex flex-col items-center">
+            <Avatar config={config} size={180} className="rounded-3xl shadow-elevated mb-4" />
+            <p className="text-sm font-medium text-ink-muted">Preview</p>
           </div>
 
-          {/* Save button */}
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileTap={{ scale: 0.97 }}
             onClick={handleSave}
             disabled={saving}
-            className="w-full mt-6 bg-apple-text text-white font-bold py-4 rounded-2xl shadow-apple-lg flex items-center justify-center gap-3 hover:bg-black disabled:opacity-50"
+            className="w-full mt-4 btn-primary py-4 flex items-center justify-center gap-2 text-base disabled:opacity-50"
           >
             {saving ? '...' : (
               <>
-                <Check size={20} strokeWidth={3} />
+                <Check size={18} />
                 Save Avatar
               </>
             )}
@@ -113,51 +109,48 @@ export default function AvatarEditor({ initialConfig, onSave, onBack }) {
 
         {/* Controls */}
         <motion.div variants={itemVariants}>
-          {/* Section tabs */}
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-1.5 mb-6">
             {SECTIONS.map((s) => (
               <button
                 key={s.id}
                 onClick={() => setActiveSection(s.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   activeSection === s.id
-                    ? 'bg-apple-blue text-white shadow-apple'
-                    : 'bg-black/5 text-apple-muted hover:bg-black/10'
+                    ? 'bg-primary text-white'
+                    : 'bg-surface-sunken text-ink-muted hover:bg-border'
                 }`}
               >
-                <s.icon size={14} strokeWidth={2.5} />
+                <s.icon size={13} />
                 {s.label}
               </button>
             ))}
           </div>
 
-          {/* Options */}
-          <div className="apple-card p-6">
-            <p className="text-[10px] font-black text-apple-muted uppercase tracking-[0.2em] mb-5">
+          <div className="card-flat p-5">
+            <p className="text-[11px] font-medium text-ink-muted uppercase tracking-wider mb-4">
               {SECTIONS.find((s) => s.id === activeSection)?.label}
             </p>
 
             {isColorField ? (
-              /* Color swatches */
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 gap-2.5">
                 {AVATAR_OPTIONS[activeSection].map((key) => {
                   const selected = config[activeSection] === key
                   return (
                     <button
                       key={key}
                       onClick={() => updateField(activeSection, key)}
-                      className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all ${
-                        selected ? 'ring-2 ring-apple-blue ring-offset-2 scale-105' : 'hover:bg-black/5'
+                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all ${
+                        selected ? 'ring-2 ring-primary ring-offset-2' : 'hover:bg-surface-sunken'
                       }`}
                     >
                       <div
-                        className="w-10 h-10 rounded-full shadow-sm border-2"
+                        className="w-9 h-9 rounded-full border-2"
                         style={{
                           backgroundColor: colorMap[key],
-                          borderColor: selected ? '#007AFF' : 'rgba(0,0,0,0.05)',
+                          borderColor: selected ? '#E8604C' : 'rgba(0,0,0,0.05)',
                         }}
                       />
-                      <span className="text-[10px] font-bold text-apple-muted uppercase tracking-wider">
+                      <span className="text-[10px] font-medium text-ink-muted">
                         {LABELS[activeSection]?.[key] || key}
                       </span>
                     </button>
@@ -165,27 +158,25 @@ export default function AvatarEditor({ initialConfig, onSave, onBack }) {
                 })}
               </div>
             ) : (
-              /* Icon/label options */
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 {AVATAR_OPTIONS[activeSection].map((key) => {
                   const selected = config[activeSection] === key
-                  // Show a mini preview for each option
                   const previewConfig = { ...config, [activeSection]: key }
                   return (
                     <button
                       key={key}
                       onClick={() => updateField(activeSection, key)}
-                      className={`flex items-center gap-3 p-4 rounded-2xl transition-all text-left ${
+                      className={`flex items-center gap-2.5 p-3 rounded-xl transition-all text-left ${
                         selected
-                          ? 'bg-apple-blue text-white shadow-apple'
-                          : 'bg-black/5 hover:bg-black/10 text-apple-text'
+                          ? 'bg-primary text-white'
+                          : 'bg-surface-sunken hover:bg-border text-ink'
                       }`}
                     >
-                      <Avatar config={previewConfig} size={36} className="rounded-xl" />
-                      <span className="text-sm font-bold capitalize">
+                      <Avatar config={previewConfig} size={32} className="rounded-lg" />
+                      <span className="text-sm font-medium capitalize">
                         {LABELS[activeSection]?.[key] || key}
                       </span>
-                      {selected && <Check size={16} className="ml-auto" strokeWidth={3} />}
+                      {selected && <Check size={14} className="ml-auto" />}
                     </button>
                   )
                 })}

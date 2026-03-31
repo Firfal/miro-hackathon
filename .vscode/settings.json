@@ -1,0 +1,5 @@
+{
+    "kiroAgent.configureMCP": "Enabled",
+	"javascript.autoClosingTags": false,
+	"snyk.advanced.autoSelectOrganization": true
+}
