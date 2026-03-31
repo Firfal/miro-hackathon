@@ -50,19 +50,19 @@ export default function HRApp({ user, profile, onLogout }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-apple-light flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center animate-pulse">
-          <div className="w-16 h-16 bg-apple-blue/10 rounded-2xl flex items-center justify-center text-apple-blue mx-auto mb-4">
-            <Loader2 className="animate-spin" size={32} />
+          <div className="w-12 h-12 bg-primary-light rounded-xl flex items-center justify-center text-primary mx-auto mb-3">
+            <Loader2 className="animate-spin" size={24} />
           </div>
-          <p className="text-apple-muted font-bold tracking-tight">Syncing team data...</p>
+          <p className="text-ink-muted font-medium">Syncing team data...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-apple-light flex">
+    <div className="min-h-screen bg-surface flex">
       <Sidebar
         currentView={view}
         onNavigate={setView}
