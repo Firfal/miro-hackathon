@@ -65,10 +65,7 @@ export default function Login() {
           variants={containerVariants}
           className="relative z-10 text-center px-16 max-w-lg"
         >
-          <motion.div variants={itemVariants} className="flex items-center justify-center gap-3 mb-12">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-              <span className="text-white text-xl font-bold">M</span>
-            </div>
+          <motion.div variants={itemVariants} className="flex items-center justify-center mb-12">
             <span className="text-2xl font-bold text-ink tracking-tight">Mindly</span>
           </motion.div>
 
@@ -95,9 +92,6 @@ export default function Login() {
         >
           {/* Mobile logo */}
           <motion.div variants={itemVariants} className="lg:hidden text-center mb-10">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mx-auto mb-3">
-              <span className="text-white text-xl font-bold">M</span>
-            </div>
             <h1 className="text-2xl font-bold text-ink tracking-tight">Mindly</h1>
           </motion.div>
 

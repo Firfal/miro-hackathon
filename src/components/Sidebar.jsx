@@ -27,9 +27,6 @@ export default function Sidebar({ currentView, onNavigate, onStartCheckIn, profi
         {/* Logo */}
         <div className="mb-8 px-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-              <span className="text-white text-base font-bold">M</span>
-            </div>
             <div>
               <h1 className="text-lg font-bold tracking-tight text-ink">Mindly</h1>
               <p className="text-[10px] text-ink-muted font-medium uppercase tracking-wider">

@@ -11,9 +11,6 @@ function App() {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-white text-xl font-bold">M</span>
-          </div>
           <h1 className="text-xl font-bold text-ink tracking-tight mb-1">Mindly</h1>
           <div className="flex items-center justify-center gap-2 text-ink-muted text-sm">
             <Loader2 className="animate-spin" size={14} />
