@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Activity, Zap, Flame, Brain, AlertTriangle, Share2, Copy, Check, Edit2, Save, X, Loader2 } from 'lucide-react'
+import { Activity, Zap, Flame, Brain, AlertTriangle, Share2, Copy, Check, Edit2, Save, X, Loader2, ChevronRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { moodConfig } from '../data/mockData'
 import { useAuth } from '../hooks/useAuth'
