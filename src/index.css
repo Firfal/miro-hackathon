@@ -17,23 +17,68 @@
 
 @layer components {
   .card {
-    @apply bg-white rounded-2xl border border-border-subtle transition-shadow duration-300 hover:shadow-elevated;
+    background-color: #FFFFFF;
+    border-radius: 1rem;
+    border: 1px solid #F0EDE8;
+    transition: box-shadow 300ms;
+  }
+  .card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   }
 
   .card-flat {
-    @apply bg-white rounded-2xl border border-border-subtle;
+    background-color: #FFFFFF;
+    border-radius: 1rem;
+    border: 1px solid #F0EDE8;
   }
 
   .btn-primary {
-    @apply px-5 py-3 bg-primary text-white font-semibold rounded-xl transition-all duration-200 active:scale-[0.97] hover:bg-primary-dark;
+    padding: 0.75rem 1.25rem;
+    background-color: #E8604C;
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    transition: all 200ms;
+  }
+  .btn-primary:hover {
+    background-color: #D14E3B;
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
   }
 
   .btn-secondary {
-    @apply px-5 py-3 bg-surface-sunken text-ink font-semibold rounded-xl transition-all duration-200 active:scale-[0.97] hover:bg-border;
+    padding: 0.75rem 1.25rem;
+    background-color: #F2EFEA;
+    color: #1D1D1F;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    transition: all 200ms;
+  }
+  .btn-secondary:hover {
+    background-color: #E8E4DE;
+  }
+  .btn-secondary:active {
+    transform: scale(0.97);
   }
 
   .input-field {
-    @apply w-full bg-surface-sunken border border-border rounded-xl px-4 py-3.5 text-ink placeholder:text-ink-faint focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all duration-200 font-medium;
+    width: 100%;
+    background-color: #F2EFEA;
+    border: 1px solid #E8E4DE;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1rem;
+    color: #1D1D1F;
+    font-weight: 500;
+    transition: all 200ms;
+  }
+  .input-field::placeholder {
+    color: #C5C0BA;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: #E8604C;
+    box-shadow: 0 0 0 2px rgba(232,96,76,0.15);
   }
 }
 
