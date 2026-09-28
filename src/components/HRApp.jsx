@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Sidebar from './Sidebar'
 import HRDashboard from './HRDashboard'
 import HRTeam from './HRTeam'
@@ -8,6 +8,7 @@ import HREmployeeDetail from './HREmployeeDetail'
 import AvatarEditor from './AvatarEditor'
 import { useTeamCheckins, useTeamMembers } from '../hooks/useCheckins'
 import { useAuth } from '../hooks/useAuth'
+import { generateMoodHistory, demoEmployees } from '../data/mockData'
 import { Loader2 } from 'lucide-react'
 
 export default function HRApp({ user, profile, onLogout }) {
@@ -21,22 +22,31 @@ export default function HRApp({ user, profile, onLogout }) {
   const loading = checkinsLoading || membersLoading
 
   // Enrich members with their latest checkin data
-  const enrichedMembers = members.map((m) => {
-    const memberCheckins = checkins
-      .filter((c) => c.userId === m.id)
-      .sort((a, b) => b.date.localeCompare(a.date))
-    const latest = memberCheckins[0]
-    return {
-      ...m,
-      checkins: memberCheckins,
-      latestCheckin: latest,
-      mood: latest?.mood || null,
-      energy: latest?.energy || null,
-      stress: latest?.stress || null,
-      mentalLoad: latest?.mentalLoad || null,
-      checkedInToday: latest?.date === new Date().toISOString().split('T')[0],
-    }
-  })
+  const enrichedMembers = useMemo(() => {
+    const enriched = members.map((m, idx) => {
+      const memberCheckins = checkins
+        .filter((c) => c.userId === m.id)
+        .sort((a, b) => b.date.localeCompare(a.date))
+
+      // If no real checkins, generate fake demo data
+      const finalCheckins = memberCheckins.length > 0
+        ? memberCheckins
+        : generateMoodHistory(demoEmployees[idx % demoEmployees.length]?.seed || idx + 1)
+
+      const latest = finalCheckins[0]
+      return {
+        ...m,
+        checkins: finalCheckins,
+        latestCheckin: latest,
+        mood: latest?.mood || null,
+        energy: latest?.energy || null,
+        stress: latest?.stress || null,
+        mentalLoad: latest?.mentalLoad || null,
+        checkedInToday: latest?.date === new Date().toISOString().split('T')[0],
+      }
+    })
+    return enriched
+  }, [members, checkins])
 
   const handleSelectMember = (member) => {
     setSelectedMember(member)
@@ -75,7 +85,7 @@ export default function HRApp({ user, profile, onLogout }) {
         {view === 'dashboard' && (
           <HRDashboard
             members={enrichedMembers}
-            checkins={checkins}
+            checkins={checkins.length > 0 ? checkins : enrichedMembers.flatMap((m) => m.checkins)}
             onSelectMember={handleSelectMember}
             teamCode={profile.teamCode}
           />

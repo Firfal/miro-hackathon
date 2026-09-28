@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Flame, ClipboardList, Calendar, Zap, Lightbulb, ChevronRight, Brain, Waves } from 'lucide-react'
+import { Plus, Flame, ClipboardList, Calendar, Zap, Lightbulb, ChevronRight, Brain, Waves, Sparkles, Loader2 } from 'lucide-react'
 import { moodConfig } from '../data/mockData'
 import { MoodFace } from './Illustrations'
 
-export default function EmployeeHome({ profile, todayCheckin, checkins, onStartCheckIn }) {
+export default function EmployeeHome({ profile, todayCheckin, checkins, onStartCheckIn, onGenerateDemo }) {
+  const [generating, setGenerating] = useState(false)
   const today = new Date()
   const dateStr = today.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -149,6 +151,32 @@ export default function EmployeeHome({ profile, todayCheckin, checkins, onStartC
           </div>
         </motion.div>
       )}
+
+      {/* Generate Demo Data */}
+      <motion.div variants={itemVariants} className="mb-10">
+        <button
+          onClick={async () => {
+            setGenerating(true)
+            try {
+              await onGenerateDemo()
+            } catch (e) {
+              console.error('Failed to generate demo data:', e)
+            } finally {
+              setGenerating(false)
+            }
+          }}
+          disabled={generating}
+          className="w-full card-flat p-5 flex items-center gap-4 hover:bg-surface-sunken transition-colors group disabled:opacity-60"
+        >
+          <div className="w-10 h-10 rounded-lg bg-pastel-green flex items-center justify-center text-accent-teal">
+            {generating ? <Loader2 size={20} className="animate-spin" /> : <Sparkles size={20} />}
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-ink">{generating ? 'Generating...' : 'Generate 30 Days of Demo Data'}</p>
+            <p className="text-[11px] text-ink-muted">Fill your calendar with random check-ins</p>
+          </div>
+        </button>
+      </motion.div>
 
       {/* Insight */}
       <motion.div

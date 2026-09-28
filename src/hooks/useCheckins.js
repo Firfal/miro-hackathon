@@ -50,11 +50,49 @@ export function useCheckins(userId) {
     return docRef.id
   }, [userId])
 
+  const generateDemoData = useCallback(async (teamId) => {
+    if (!userId) throw new Error('No userId')
+    const moods = ['great', 'good', 'okay', 'low', 'bad']
+    const today = new Date()
+    const batch = []
+
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(today)
+      date.setDate(date.getDate() - i)
+      // Skip some weekends randomly
+      if (date.getDay() === 0 || (date.getDay() === 6 && Math.random() > 0.3)) continue
+
+      // Weighted towards positive: 35% great, 30% good, 20% okay, 10% low, 5% bad
+      const roll = Math.random()
+      const mood = roll < 0.35 ? 'great' : roll < 0.65 ? 'good' : roll < 0.85 ? 'okay' : roll < 0.95 ? 'low' : 'bad'
+      const energy = Math.floor(Math.random() * 4) + 6 // 6-9
+      const stress = Math.floor(Math.random() * 5) + 1 // 1-5
+      const mentalLoad = Math.floor(Math.random() * 5) + 1 // 1-5
+      const dateStr = date.toISOString().split('T')[0]
+
+      batch.push(
+        addDoc(collection(db, 'checkins'), {
+          userId,
+          teamId,
+          mood,
+          energy,
+          stress,
+          mentalLoad,
+          sleep: Math.random() > 0.4 ? 'yes' : 'no',
+          date: dateStr,
+          createdAt: Timestamp.fromDate(date),
+        })
+      )
+    }
+
+    await Promise.all(batch)
+  }, [userId])
+
   const todayCheckin = checkins.find(
     (c) => c.date === new Date().toISOString().split('T')[0]
   )
 
-  return { checkins, loading, error, addCheckin, todayCheckin }
+  return { checkins, loading, error, addCheckin, generateDemoData, todayCheckin }
 }
 
 // For HR: get all checkins from team members

@@ -12,7 +12,7 @@ import { Loader2 } from 'lucide-react'
 export default function EmployeeApp({ user, profile, onLogout }) {
   const [view, setView] = useState('home')
   const [showCheckIn, setShowCheckIn] = useState(false)
-  const { checkins, addCheckin, todayCheckin, loading, error } = useCheckins(user.uid)
+  const { checkins, addCheckin, generateDemoData, todayCheckin, loading, error } = useCheckins(user.uid)
   const { updateAvatar, refreshProfile } = useAuth()
 
   // If no team joined yet, show join screen
@@ -65,6 +65,7 @@ export default function EmployeeApp({ user, profile, onLogout }) {
             todayCheckin={todayCheckin}
             checkins={checkins}
             onStartCheckIn={() => setShowCheckIn(true)}
+            onGenerateDemo={() => generateDemoData(profile.teamId)}
           />
         )}
         {view === 'history' && (
